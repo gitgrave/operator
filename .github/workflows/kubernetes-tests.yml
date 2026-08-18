@@ -74,8 +74,14 @@ jobs:
           go-version-file: go.mod
       - name: Run go fix
         run: |
-          go fix ./...
-          (cd sidecar && go fix ./...)
+          # The fixers cascade, so repeat until the tree stops changing and the
+          # failure below reports every pending fix at once.
+          for _ in 1 2 3 4 5; do
+            before=$(git status --porcelain)
+            go fix ./...
+            (cd sidecar && go fix ./...)
+            [ "$(git status --porcelain)" = "$before" ] && break
+          done
       - name: Check for uncommitted fixes
         run: |
           git diff --exit-code || {
