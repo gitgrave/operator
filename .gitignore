@@ -20,3 +20,4 @@ public.crt
 go_build_operator_
 operator.iml
 .run/
+linux/

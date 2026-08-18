@@ -72,7 +72,7 @@ dockers_v2:
     tags:
       - "{{ .Tag }}"
       - latest
-    dockerfile: Dockerfile.release
+    dockerfile: Dockerfile
     platforms:
       - linux/amd64
       - linux/arm64
@@ -96,13 +96,13 @@ dockers_v2:
     tags:
       - "{{ .Tag }}"
       - latest
-    dockerfile: sidecar/Dockerfile.release
+    dockerfile: sidecar/Dockerfile
     platforms:
       - linux/amd64
       - linux/arm64
     extra_files:
       - LICENSE
-      - sidecar/CREDITS
+      - CREDITS
     build_args:
       TAG: "{{ .Tag }}"
     labels: *labels

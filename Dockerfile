@@ -5,6 +5,7 @@ RUN microdnf update -y --nodocs && microdnf install ca-certificates -y --nodocs
 FROM registry.access.redhat.com/ubi9/ubi-micro:latest
 
 ARG TAG
+ARG TARGETPLATFORM
 
 LABEL name="MinIO" \
       vendor="MinIO Inc <dev@min.io>" \
@@ -22,6 +23,6 @@ COPY --from=build /etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem /etc/pki/ca-
 COPY CREDITS /licenses/CREDITS
 COPY LICENSE /licenses/LICENSE
 
-COPY minio-operator /minio-operator
+COPY ${TARGETPLATFORM}/minio-operator /minio-operator
 
 ENTRYPOINT ["/minio-operator"]
