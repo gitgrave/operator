@@ -25,10 +25,12 @@ DEV_TEST=$OPERATOR_DEV_TEST
 
 # Set OPERATOR_DEV_TEST to skip downloading these dependencies
 if [[ -z "${DEV_TEST}" ]]; then
-  ## Make sure to install things if not present already
-  sudo curl -#L "https://dl.k8s.io/release/v1.30.10/bin/$OS/$ARCH/kubectl" -o /usr/local/bin/kubectl
-
-  sudo chmod +x /usr/local/bin/kubectl
+  ## Make sure to install things if not present already.
+  ## In CI kubectl and helm come from Azure/setup-kubectl and Azure/setup-helm.
+  if ! command -v kubectl >/dev/null 2>&1; then
+    sudo curl -#L "https://dl.k8s.io/release/v1.30.10/bin/$OS/$ARCH/kubectl" -o /usr/local/bin/kubectl
+    sudo chmod +x /usr/local/bin/kubectl
+  fi
 
   sudo curl -#L "https://dl.min.io/client/mc/release/${OS}-${ARCH}/mc" -o /usr/local/bin/mc
   sudo chmod +x /usr/local/bin/mc
@@ -540,7 +542,9 @@ function install_operator() {
   # To compile current branch
   echo "Compiling Current Branch Operator"
   TAG=minio/operator:noop
-  (cd "${SCRIPT_DIR}/.." && try docker build -t $TAG .) # will not change your shell's current directory
+  # The Dockerfile takes the binary from ${TARGETPLATFORM}/, the layout goreleaser stages.
+  (cd "${SCRIPT_DIR}/.." && mkdir -p "linux/$(go env GOARCH)" && cp minio-operator "linux/$(go env GOARCH)/" &&
+    try docker build --platform "linux/$(go env GOARCH)" -t $TAG .) # will not change your shell's current directory
 
   echo 'start - load compiled image so we can use it later on'
   try kind load docker-image $TAG
@@ -548,7 +552,8 @@ function install_operator() {
   # To compile current branch
   echo "Compiling Current Branch Sidecar"
   SIDECAR_TAG=minio/operator-sidecar:noop
-  (cd "${SCRIPT_DIR}/../sidecar" && try docker build -t $SIDECAR_TAG .) # will not change your shell's current directory
+  (cd "${SCRIPT_DIR}/../sidecar" && mkdir -p "linux/$(go env GOARCH)" && cp minio-operator-sidecar "linux/$(go env GOARCH)/" &&
+    try docker build --platform "linux/$(go env GOARCH)" -t $SIDECAR_TAG .) # will not change your shell's current directory
 
   echo 'start - load compiled sidecar image so we can use it later on'
   try kind load docker-image $SIDECAR_TAG

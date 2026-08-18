@@ -140,8 +140,8 @@ func StartOperator(kubeconfig string) {
 	var namespaces set.StringSet
 	if isNamespaced {
 		namespaces = set.NewStringSet()
-		rawNamespaces := strings.Split(namespacesENv, ",")
-		for _, nsStr := range rawNamespaces {
+		rawNamespaces := strings.SplitSeq(namespacesENv, ",")
+		for nsStr := range rawNamespaces {
 			if nsStr != "" {
 				namespaces.Add(strings.TrimSpace(nsStr))
 			}

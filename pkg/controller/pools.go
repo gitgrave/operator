@@ -20,6 +20,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"maps"
 	"strings"
 
 	corev1 "k8s.io/api/core/v1"
@@ -74,9 +75,7 @@ func poolSSMatchesSpec(expectedStatefulSet, existingStatefulSet *appsv1.Stateful
 		return false, nil
 	}
 	expectedAnnotations := map[string]string{}
-	for k, v := range expectedMetadata.Annotations {
-		expectedAnnotations[k] = v
-	}
+	maps.Copy(expectedAnnotations, expectedMetadata.Annotations)
 	currentAnnotations := existingStatefulSet.ObjectMeta.Annotations
 	delete(expectedAnnotations, corev1.LastAppliedConfigAnnotation)
 	delete(currentAnnotations, corev1.LastAppliedConfigAnnotation)

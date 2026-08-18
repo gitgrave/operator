@@ -416,7 +416,7 @@ func (t *Tenant) GenBearerToken(accessKey, secretKey string) string {
 // GetAccessKeyFromBearerToken parses the BearerToken with secretKey to extract accessKey
 func GetAccessKeyFromBearerToken(bearerToken string, secretKey string) (string, error) {
 	claims := &jwt.StandardClaims{}
-	token, err := jwt.ParseWithClaims(bearerToken, claims, func(_ *jwt.Token) (interface{}, error) {
+	token, err := jwt.ParseWithClaims(bearerToken, claims, func(_ *jwt.Token) (any, error) {
 		return []byte(secretKey), nil
 	})
 	if err != nil {
@@ -449,7 +449,7 @@ func (t *Tenant) TemplatedMinIOHosts(hostsTemplate string) (hosts []string) {
 	tmpl, err := template.New("hosts").Parse(hostsTemplate)
 	if err != nil {
 		msg := "Invalid go template for hosts"
-		klog.V(2).Infof(msg)
+		klog.V(2).Info(msg)
 		return hosts
 	}
 	var maxIndex, index int32
@@ -492,7 +492,7 @@ func (t *Tenant) ConsoleServerHost() string {
 func (t *Tenant) MinIOHeadlessServiceHost() string {
 	if t.Spec.Pools[0].Servers == 1 {
 		msg := "Please set the server count > 1"
-		klog.V(2).Infof(msg)
+		klog.V(2).Info(msg)
 		return ""
 	}
 	return fmt.Sprintf("%s.%s.svc.%s", t.MinIOHLServiceName(), t.Namespace, GetClusterDomain())
@@ -1196,14 +1196,11 @@ func lcp(strs []string, pre bool) string {
 			return ""
 		}
 		// maximum possible length
-		maxl := xfixl
-		if strl < maxl {
-			maxl = strl
-		}
+		maxl := min(strl, xfixl)
 		// compare letters
 		if pre {
 			// prefix, iterate left to right
-			for i := 0; i < maxl; i++ {
+			for i := range maxl {
 				if xfix[i] != str[i] {
 					xfix = xfix[:i]
 					break
@@ -1211,7 +1208,7 @@ func lcp(strs []string, pre bool) string {
 			}
 		} else {
 			// suffix, iterate right to left
-			for i := 0; i < maxl; i++ {
+			for i := range maxl {
 				xi := xfixl - i - 1
 				si := strl - i - 1
 				if xfix[xi] != str[si] {

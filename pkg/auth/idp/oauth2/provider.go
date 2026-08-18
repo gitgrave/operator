@@ -172,7 +172,7 @@ func (o OpenIDPCfg) NewOauth2ProviderClient(name string, scopes []string, r *htt
 		// FIXME: ResponseTypesSupported is a JSON array of strings - it
 		// may not actually have strings with spaces inside them -
 		// making the following code unnecessary.
-		for _, s := range strings.Fields(responseType) {
+		for s := range strings.FieldsSeq(responseType) {
 			supportedResponseTypes.Add(s)
 		}
 	}
@@ -185,8 +185,8 @@ func (o OpenIDPCfg) NewOauth2ProviderClient(name string, scopes []string, r *htt
 	// If provided scopes are empty we use the user configured list or a default
 	// list.
 	if len(scopes) == 0 {
-		scopesTmp := strings.Split(o[name].Scopes, ",")
-		for _, s := range scopesTmp {
+		scopesTmp := strings.SplitSeq(o[name].Scopes, ",")
+		for s := range scopesTmp {
 			w := strings.TrimSpace(s)
 			if w != "" {
 				scopes = append(scopes, w)
@@ -229,28 +229,28 @@ func (o OpenIDPCfg) NewOauth2ProviderClient(name string, scopes []string, r *htt
 
 // User struct coming from idp
 type User struct {
-	AppMetadata       map[string]interface{} `json:"app_metadata"`
-	Blocked           bool                   `json:"blocked"`
-	CreatedAt         string                 `json:"created_at"`
-	Email             string                 `json:"email"`
-	EmailVerified     bool                   `json:"email_verified"`
-	FamilyName        string                 `json:"family_name"`
-	GivenName         string                 `json:"given_name"`
-	Identities        []interface{}          `json:"identities"`
-	LastIP            string                 `json:"last_ip"`
-	LastLogin         string                 `json:"last_login"`
-	LastPasswordReset string                 `json:"last_password_reset"`
-	LoginsCount       int                    `json:"logins_count"`
-	MultiFactor       string                 `json:"multifactor"`
-	Name              string                 `json:"name"`
-	Nickname          string                 `json:"nickname"`
-	PhoneNumber       string                 `json:"phone_number"`
-	PhoneVerified     bool                   `json:"phone_verified"`
-	Picture           string                 `json:"picture"`
-	UpdatedAt         string                 `json:"updated_at"`
-	UserID            string                 `json:"user_id"`
-	UserMetadata      map[string]interface{} `json:"user_metadata"`
-	Username          string                 `json:"username"`
+	AppMetadata       map[string]any `json:"app_metadata"`
+	Blocked           bool           `json:"blocked"`
+	CreatedAt         string         `json:"created_at"`
+	Email             string         `json:"email"`
+	EmailVerified     bool           `json:"email_verified"`
+	FamilyName        string         `json:"family_name"`
+	GivenName         string         `json:"given_name"`
+	Identities        []any          `json:"identities"`
+	LastIP            string         `json:"last_ip"`
+	LastLogin         string         `json:"last_login"`
+	LastPasswordReset string         `json:"last_password_reset"`
+	LoginsCount       int            `json:"logins_count"`
+	MultiFactor       string         `json:"multifactor"`
+	Name              string         `json:"name"`
+	Nickname          string         `json:"nickname"`
+	PhoneNumber       string         `json:"phone_number"`
+	PhoneVerified     bool           `json:"phone_verified"`
+	Picture           string         `json:"picture"`
+	UpdatedAt         string         `json:"updated_at"`
+	UserID            string         `json:"user_id"`
+	UserMetadata      map[string]any `json:"user_metadata"`
+	Username          string         `json:"username"`
 }
 
 // StateKeyFunc - is a function that returns a key used in OAuth Authorization
@@ -407,7 +407,7 @@ func parseDiscoveryDoc(ustr string, httpClient *http.Client) (DiscoveryDoc, erro
 func GetRandomStateWithHMAC(length int, keyFunc StateKeyFunc) string {
 	state := utils.RandomCharString(length)
 	hmac := utils.ComputeHmac256(state, keyFunc())
-	return base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s:%s", state, hmac)))
+	return base64.StdEncoding.EncodeToString(fmt.Appendf(nil, "%s:%s", state, hmac))
 }
 
 // LoginURLParams idp login parameters

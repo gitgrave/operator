@@ -153,7 +153,7 @@ func NewSideCarController(kubeClient *kubernetes.Clientset, controllerClient *cl
 	}
 
 	_, err := tenantInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
-		UpdateFunc: func(oldObj, newObj interface{}) {
+		UpdateFunc: func(oldObj, newObj any) {
 			oldTenant := oldObj.(*v2.Tenant)
 			newTenant := newObj.(*v2.Tenant)
 			if newTenant.ResourceVersion == oldTenant.ResourceVersion {
@@ -170,7 +170,7 @@ func NewSideCarController(kubeClient *kubernetes.Clientset, controllerClient *cl
 	}
 
 	_, err = secretInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
-		UpdateFunc: func(oldObj, newObj interface{}) {
+		UpdateFunc: func(oldObj, newObj any) {
 			oldSecret := oldObj.(*corev1.Secret)
 			// ignore anything that is not what we want
 			if oldSecret.Name != secretName {

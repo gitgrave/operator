@@ -39,6 +39,7 @@ binary:
 operator: binary
 
 docker: operator
+	@mkdir -p linux/$(GOARCH) && cp minio-operator linux/$(GOARCH)/minio-operator
 	@docker buildx build --no-cache --load --platform linux/$(GOARCH) -t $(TAG) .
 
 build: regen-crd verify operator docker

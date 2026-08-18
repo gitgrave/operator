@@ -39,6 +39,7 @@ binary:
 sidecar: binary
 
 docker: sidecar
+	@mkdir -p linux/$(GOARCH) && cp minio-operator-sidecar linux/$(GOARCH)/minio-operator-sidecar
 	@docker buildx build --no-cache --load --platform linux/$(GOARCH) -t $(TAG) .
 
 build: verify sidecar docker
