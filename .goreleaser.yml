@@ -72,7 +72,7 @@ dockers_v2:
     tags:
       - "{{ .Tag }}"
       - latest
-    dockerfile: Dockerfile
+    dockerfile: Dockerfile.release
     platforms:
       - linux/amd64
       - linux/arm64
@@ -96,7 +96,7 @@ dockers_v2:
     tags:
       - "{{ .Tag }}"
       - latest
-    dockerfile: sidecar/Dockerfile
+    dockerfile: sidecar/Dockerfile.release
     platforms:
       - linux/amd64
       - linux/arm64
