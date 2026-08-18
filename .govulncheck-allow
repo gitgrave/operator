@@ -1,0 +1,16 @@
+# Symbol-level govulncheck findings accepted for this fork.
+# Format: one OSV ID per line. Everything not listed here fails CI.
+#
+# All four are vulnerabilities in the Prometheus *server* (web UI stored XSS,
+# remote-read snappy DoS, Azure AD remote-write secret exposure via the config
+# API). They are pulled in transitively through madmin-go and are only reported
+# as reachable via package init (controller.init -> madmin.init ->
+# histogram.init). The operator runs no Prometheus server, web UI, remote-read
+# endpoint or Azure AD remote write, so none of them is exploitable here.
+# Fixing them needs github.com/prometheus/prometheus >= v0.311.3, which drags
+# k8s.io/* from v0.32 to v0.35 - too invasive for a fork that only carries the
+# leader-election shutdown fix. Drop these once upstream bumps Prometheus.
+GO-2026-5264
+GO-2026-5381
+GO-2026-5662
+GO-2026-5710
