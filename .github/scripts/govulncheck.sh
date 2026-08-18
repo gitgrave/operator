@@ -20,7 +20,7 @@ unexpected=$(comm -23 <(sort -u "$findings") <(echo "$allowed"))
 
 if [ -n "$unexpected" ]; then
   echo "Unaccepted symbol-level vulnerabilities:"
-  echo "$unexpected" | sed 's/^/  /'
+  while IFS= read -r id; do echo "  $id"; done <<<"$unexpected"
   echo
   echo "Fix them, or add the ID to .govulncheck-allow with a rationale."
   govulncheck ./... || true
@@ -29,4 +29,4 @@ fi
 
 echo "No unaccepted symbol-level vulnerabilities."
 echo "Accepted (see .govulncheck-allow):"
-sort -u "$findings" | sed 's/^/  /'
+while IFS= read -r id; do [ -n "$id" ] && echo "  $id"; done < <(sort -u "$findings")
