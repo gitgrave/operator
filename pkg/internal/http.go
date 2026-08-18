@@ -112,7 +112,7 @@ func GetSourceIPFromHeaders(r *http.Request) string {
 }
 
 // EncodeResponse Encodes the response headers into XML format.
-func EncodeResponse(response interface{}) []byte {
+func EncodeResponse(response any) []byte {
 	var bytesBuffer bytes.Buffer
 	bytesBuffer.WriteString(xml.Header)
 	e := xml.NewEncoder(&bytesBuffer)

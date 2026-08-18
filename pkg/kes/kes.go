@@ -205,11 +205,11 @@ type Keys struct {
 type ServerConfigV1 struct {
 	Addr     string            `yaml:"address,omitempty" json:"address,omitempty"`
 	Root     Identity          `yaml:"root,omitempty" json:"root,omitempty"`
-	TLS      TLS               `yaml:"tls,omitempty" json:"tls,omitempty"`
+	TLS      TLS               `yaml:"tls,omitempty" json:"tls"`
 	Policies map[string]Policy `yaml:"policy,omitempty" json:"policy,omitempty"`
-	Cache    Cache             `yaml:"cache,omitempty" json:"cache,omitempty"`
-	Log      Log               `yaml:"log,omitempty" json:"log,omitempty"`
-	Keys     Keys              `yaml:"keys,omitempty" json:"keys,omitempty"`
+	Cache    Cache             `yaml:"cache,omitempty" json:"cache"`
+	Log      Log               `yaml:"log,omitempty" json:"log"`
+	Keys     Keys              `yaml:"keys,omitempty" json:"keys"`
 }
 
 // PolicyV2 policy identities for KES Edge after release 2023-04-03T16-41-28Z
@@ -235,13 +235,13 @@ type CacheV2 struct {
 // Starting 2023-04-03T16-41-28Z "keys" field changed to "keystore" for Edge
 // And Admin is required
 type ServerConfigV2 struct {
-	Admin    AdminIdentity       `yaml:"admin,omitempty" json:"admin,omitempty"`
+	Admin    AdminIdentity       `yaml:"admin,omitempty" json:"admin"`
 	Addr     string              `yaml:"address,omitempty" json:"address,omitempty"`
-	TLS      TLS                 `yaml:"tls,omitempty" json:"tls,omitempty"`
+	TLS      TLS                 `yaml:"tls,omitempty" json:"tls"`
 	Policies map[string]PolicyV2 `yaml:"policy,omitempty" json:"policy,omitempty"`
-	Cache    CacheV2             `yaml:"cache,omitempty" json:"cache,omitempty"`
-	Log      Log                 `yaml:"log,omitempty" json:"log,omitempty"`
-	Keystore Keys                `yaml:"keystore,omitempty" json:"keystore,omitempty"`
+	Cache    CacheV2             `yaml:"cache,omitempty" json:"cache"`
+	Log      Log                 `yaml:"log,omitempty" json:"log"`
+	Keystore Keys                `yaml:"keystore,omitempty" json:"keystore"`
 }
 
 // Marshal ServerConfigV1

@@ -19,6 +19,7 @@ package controller
 import (
 	"context"
 	"errors"
+	"maps"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
@@ -38,9 +39,7 @@ func (c *Controller) getTenantConfiguration(ctx context.Context, tenant *miniov2
 			return nil, err
 		}
 		configFromFile := miniov2.ParseRawConfiguration(minioConfigurationSecret.Data["config.env"])
-		for key, val := range configFromFile {
-			tenantConfiguration[key] = val
-		}
+		maps.Copy(tenantConfiguration, configFromFile)
 	}
 	return tenantConfiguration, nil
 }
@@ -61,9 +60,7 @@ func (c *Controller) getTenantCredentials(ctx context.Context, tenant *miniov2.T
 	if err != nil {
 		return nil, err
 	}
-	for key, val := range config {
-		tenantConfiguration[key] = val
-	}
+	maps.Copy(tenantConfiguration, config)
 
 	var accessKey string
 	var secretKey string

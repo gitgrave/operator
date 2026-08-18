@@ -16,6 +16,7 @@ package statefulsets
 
 import (
 	"fmt"
+	"maps"
 	"regexp"
 	"sort"
 	"strings"
@@ -58,9 +59,7 @@ func KESMetadata(t *miniov2.Tenant) metav1.ObjectMeta {
 	if meta.Labels == nil {
 		meta.Labels = make(map[string]string)
 	}
-	for k, v := range t.KESPodLabels() {
-		meta.Labels[k] = v
-	}
+	maps.Copy(meta.Labels, t.KESPodLabels())
 	return meta
 }
 

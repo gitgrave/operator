@@ -62,11 +62,11 @@ func parseConfEnvSecret(secret *corev1.Secret) map[string]corev1.EnvVar {
 	data := secret.Data["config.env"]
 	envMap := make(map[string]corev1.EnvVar)
 
-	lines := strings.Split(string(data), "\n")
-	for _, line := range lines {
+	lines := strings.SplitSeq(string(data), "\n")
+	for line := range lines {
 		line = strings.TrimSpace(line)
-		if strings.HasPrefix(line, "export ") {
-			line = strings.TrimPrefix(line, "export ")
+		if after, ok := strings.CutPrefix(line, "export "); ok {
+			line = after
 			parts := strings.SplitN(line, "=", 2)
 			if len(parts) == 2 {
 				name := strings.TrimSpace(parts[0])
@@ -235,9 +235,9 @@ func buildTenantEnvs(tenant *miniov2.Tenant, cfgEnvExisting map[string]corev1.En
 }
 
 func envVarsToFileContent(envVars []corev1.EnvVar) string {
-	content := ""
+	var content strings.Builder
 	for _, env := range envVars {
-		content += fmt.Sprintf("export %s=\"%s\"\n", env.Name, env.Value)
+		content.WriteString(fmt.Sprintf("export %s=\"%s\"\n", env.Name, env.Value))
 	}
-	return content
+	return content.String()
 }

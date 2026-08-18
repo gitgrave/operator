@@ -31,7 +31,7 @@ import (
 )
 
 // handlePodChange will handle changes in pods and queue it for processing, pods are already filtered by PodInformer
-func (c *Controller) handlePodChange(obj interface{}) {
+func (c *Controller) handlePodChange(obj any) {
 	// NOTE: currently only Tenant pods are being monitored by the Pod Informer
 	object, err := utils.CastObjectToMetaV1(obj)
 	if err != nil {

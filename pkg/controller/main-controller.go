@@ -291,7 +291,7 @@ func NewController(
 	// Set up an event handler for when Tenant resources change
 	tenantInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
 		AddFunc: controller.enqueueTenant,
-		UpdateFunc: func(oldObj, newObj interface{}) {
+		UpdateFunc: func(oldObj, newObj any) {
 			oldTenant := oldObj.(*miniov2.Tenant)
 			newTenant := newObj.(*miniov2.Tenant)
 			if newTenant.ResourceVersion == oldTenant.ResourceVersion {
@@ -314,7 +314,7 @@ func NewController(
 	// https://github.com/kubernetes/community/blob/master/contributors/devel/sig-api-machinery/controllers.md
 	statefulSetInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
 		AddFunc: controller.handleObject,
-		UpdateFunc: func(oldObj, newObj interface{}) {
+		UpdateFunc: func(oldObj, newObj any) {
 			newDepl := newObj.(*appsv1.StatefulSet)
 			oldDepl := oldObj.(*appsv1.StatefulSet)
 			if newDepl.ResourceVersion == oldDepl.ResourceVersion {
@@ -329,7 +329,7 @@ func NewController(
 
 	deploymentInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
 		AddFunc: controller.handleObject,
-		UpdateFunc: func(oldObj, newObj interface{}) {
+		UpdateFunc: func(oldObj, newObj any) {
 			newDepl := newObj.(*appsv1.Deployment)
 			oldDepl := oldObj.(*appsv1.Deployment)
 			if newDepl.ResourceVersion == oldDepl.ResourceVersion {
@@ -344,7 +344,7 @@ func NewController(
 
 	podInformer.AddEventHandler(cache.ResourceEventHandlerFuncs{
 		AddFunc: controller.handlePodChange,
-		UpdateFunc: func(oldObj, newObj interface{}) {
+		UpdateFunc: func(oldObj, newObj any) {
 			newPod := newObj.(*corev1.Pod)
 			oldPod := oldObj.(*corev1.Pod)
 			// Ignore Pod changes if same ResourceVersion
@@ -357,10 +357,10 @@ func NewController(
 	})
 
 	secretInformer.Informer().AddEventHandler(cache.ResourceEventHandlerFuncs{
-		AddFunc: func(obj interface{}) {
+		AddFunc: func(obj any) {
 			controller.handleSecret(obj, nil)
 		},
-		UpdateFunc: func(oldObj, newObj interface{}) {
+		UpdateFunc: func(oldObj, newObj any) {
 			newSecret := newObj.(*corev1.Secret)
 			oldSecret := oldObj.(*corev1.Secret)
 			if newSecret.ResourceVersion == oldSecret.ResourceVersion {
@@ -438,7 +438,7 @@ func leaderRun(ctx context.Context, c *Controller, threadiness int, notification
 	}
 
 	// Launch two workers to process Job resources
-	for i := 0; i < threadiness; i++ {
+	for range threadiness {
 		go wait.Until(c.runWorker, time.Second, ctx.Done())
 	}
 
@@ -631,11 +631,11 @@ const slashSeparator = "/"
 
 func key2NamespaceName(key string) (namespace, name string) {
 	key = strings.TrimPrefix(key, slashSeparator)
-	m := strings.Index(key, slashSeparator)
-	if m < 0 {
+	before, after, ok := strings.Cut(key, slashSeparator)
+	if !ok {
 		return "", key
 	}
-	return key[:m], key[m+len(slashSeparator):]
+	return before, after
 }
 
 func (c *Controller) updateServer(
@@ -1273,9 +1273,7 @@ func (c *Controller) syncHandler(key string) (Result, error) {
 			if existingStatefulSet.Spec.Template.ObjectMeta.Labels == nil {
 				newStatefulSet.Spec.Template.ObjectMeta.Labels = make(map[string]string)
 			}
-			for k, v := range carryOverLabels {
-				newStatefulSet.Spec.Template.ObjectMeta.Labels[k] = v
-			}
+			maps.Copy(newStatefulSet.Spec.Template.ObjectMeta.Labels, carryOverLabels)
 
 			if existingStatefulSet, err = c.kubeClientSet.AppsV1().StatefulSets(tenant.Namespace).Update(ctx, newStatefulSet, uOpts); err != nil {
 				klog.Errorf("[Will try again in 5sec] Update tenant %s statefulset %s error %s", tenant.Name, ssName, err)
@@ -1373,7 +1371,7 @@ func (c *Controller) syncHandler(key string) (Result, error) {
 // enqueueTenant takes a Tenant resource and converts it into a namespace/name
 // string which is then put onto the work queue. This method should *not* be
 // passed resources of any type other than Tenant.
-func (c *Controller) enqueueTenant(obj interface{}) {
+func (c *Controller) enqueueTenant(obj any) {
 	key, err := cache.MetaNamespaceKeyFunc(obj)
 	if err != nil {
 		runtime.HandleError(err)
@@ -1399,7 +1397,7 @@ func (c *Controller) enqueueTenant(obj interface{}) {
 // objects metadata.ownerReferences field for an appropriate OwnerReference.
 // It then enqueues that Tenant resource to be processed. If the object does not
 // have an appropriate OwnerReference, it will simply be skipped.
-func (c *Controller) handleObject(obj interface{}) {
+func (c *Controller) handleObject(obj any) {
 	var object metav1.Object
 	var ok bool
 	if object, ok = obj.(metav1.Object); !ok {
@@ -1434,7 +1432,7 @@ func (c *Controller) handleObject(obj interface{}) {
 	}
 }
 
-func (c *Controller) handleSecret(obj interface{}, oldObj interface{}) {
+func (c *Controller) handleSecret(obj any, oldObj any) {
 	ns := miniov2.GetNSFromFile()
 	var secret *corev1.Secret
 	var ok bool
@@ -1484,7 +1482,7 @@ func processNextItem(workqueue queue.RateLimitingInterface, syncer func(key stri
 	}
 
 	// We wrap this block in a func so we can defer c.workqueue.Done.
-	processItem := func(obj interface{}) error {
+	processItem := func(obj any) error {
 		// We call Done here so the workqueue knows we have finished
 		// processing this item. We also must remember to call Forget if we
 		// do not want this work item being re-queued. For example, we do

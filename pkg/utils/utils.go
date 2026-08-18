@@ -19,6 +19,7 @@ package utils
 import (
 	"context"
 	"fmt"
+	maps0 "maps"
 	"time"
 
 	corev1 "k8s.io/api/core/v1"
@@ -54,7 +55,7 @@ func NewPodInformer(kubeClientSet kubernetes.Interface, labelSelectorString stri
 }
 
 // CastObjectToMetaV1 gets a metav1.Object from an interface
-func CastObjectToMetaV1(obj interface{}) (metav1.Object, error) {
+func CastObjectToMetaV1(obj any) (metav1.Object, error) {
 	var object metav1.Object
 	var ok bool
 	if object, ok = obj.(metav1.Object); !ok {
@@ -75,9 +76,7 @@ func CastObjectToMetaV1(obj interface{}) (metav1.Object, error) {
 func MergeMaps(maps ...map[string]string) map[string]string {
 	dest := map[string]string{}
 	for _, m := range maps {
-		for k, v := range m {
-			dest[k] = v
-		}
+		maps0.Copy(dest, m)
 	}
 	return dest
 }
