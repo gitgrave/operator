@@ -11,12 +11,12 @@ jobs:
     name: Shellcheck
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-go@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
           go-version-file: go.mod
       - name: Run ShellCheck
-        uses: ludeeus/action-shellcheck@master
+        uses: ludeeus/action-shellcheck@00cae500b08a931fb5698e11e79bfbd38e612a38 # 2.0.0
         env:
           SHELLCHECK_OPTS: -e SC2046 -e SC1091 -e SC2086 -e SC2090 -e SC2089 -e SC2006 -e SC2206
   lint:
@@ -27,8 +27,8 @@ jobs:
         os: [ ubuntu-latest ]
 
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-go@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
           go-version-file: go.mod
       - name: Lint
@@ -42,8 +42,8 @@ jobs:
         os: [ ubuntu-latest ]
 
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-go@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
           go-version-file: go.mod
       - name: govet
@@ -55,17 +55,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
-        uses: actions/checkout@v3
-      - uses: actions/setup-go@v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
           go-version-file: go.mod
           cache: true
           check-latest: true
-      - name: Get govulncheck
-        run: go install golang.org/x/vuln/cmd/govulncheck@latest
-        shell: bash
       - name: Run govulncheck
-        run: govulncheck ./...
+        run: go tool govulncheck ./...
         shell: bash
   gotest:
     timeout-minutes: 30
@@ -78,8 +75,8 @@ jobs:
         os: [ ubuntu-latest ]
 
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-go@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
           go-version-file: go.mod
       - name: Go Test
@@ -93,8 +90,8 @@ jobs:
         os: [ ubuntu-latest ]
 
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-go@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
           go-version-file: go.mod
       - name: Lint
@@ -109,8 +106,8 @@ jobs:
         os: [ ubuntu-latest ]
 
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-go@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
           go-version-file: go.mod
       - name: govet
@@ -123,18 +120,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
-        uses: actions/checkout@v3
-      - uses: actions/setup-go@v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
           go-version-file: go.mod
           cache: true
           check-latest: true
-      - name: Get govulncheck
-        run: go install golang.org/x/vuln/cmd/govulncheck@latest
-        shell: bash
       - name: Run govulncheck
         working-directory: ./sidecar
-        run: govulncheck ./...
+        run: go tool govulncheck ./...
         shell: bash
   gotest-sidecar:
     timeout-minutes: 30
@@ -147,8 +141,8 @@ jobs:
         os: [ ubuntu-latest ]
 
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-go@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
           go-version-file: go.mod
       - name: Go Test
@@ -167,14 +161,14 @@ jobs:
         os: [ ubuntu-latest ]
 
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-go@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
           go-version-file: go.mod
       - name: Operator Binary
         run: |
           make operator
-      - uses: actions/cache/save@v3
+      - uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         name: Save Operator Binary
         with:
           path: |
@@ -191,15 +185,15 @@ jobs:
         os: [ ubuntu-latest ]
 
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-go@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
           go-version-file: go.mod
       - name: Operator Sidecar Binary
         working-directory: ./sidecar
         run: |
           make sidecar
-      - uses: actions/cache/save@v3
+      - uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         name: Save Operator Sidecar Binary
         with:
           path: |
@@ -216,17 +210,17 @@ jobs:
         os: [ ubuntu-latest ]
 
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-go@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
           go-version-file: go.mod
-      - uses: actions/cache@v3
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         name: Operator Binary Cache
         with:
           path: |
             ./minio-operator
           key: ${{ runner.os }}-binary-${{ github.run_id }}
-      - uses: actions/cache@v3
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         name: Operator Sidecar Binary Cache
         with:
           path: |
@@ -245,17 +239,17 @@ jobs:
         os: [ ubuntu-latest ]
 
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-go@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
           go-version-file: go.mod
-      - uses: actions/cache@v3
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         name: Operator Binary Cache
         with:
           path: |
             ./minio-operator
           key: ${{ runner.os }}-binary-${{ github.run_id }}
-      - uses: actions/cache@v3
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         name: Operator Sidecar Binary Cache
         with:
           path: |
@@ -274,17 +268,17 @@ jobs:
   #  #        os: [ ubuntu-latest ]
   #
   #    steps:
-  #      - uses: actions/checkout@v3
-  #      - uses: actions/setup-go@v4
+  #      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+  #      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
   #        with:
   #          go-version-file: go.mod
-  #      - uses: actions/cache@v3
+  #      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
   #        name: Operator Binary Cache
   #        with:
   #          path: |
   #            ./minio-operator
   #          key: ${{ runner.os }}-binary-${{ github.run_id }}
-  #      - uses: actions/cache@v3
+  #      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
   #        name: Operator Sidecar Binary Cache
   #        with:
   #          path: |
@@ -303,17 +297,17 @@ jobs:
         os: [ ubuntu-latest ]
 
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-go@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
           go-version-file: go.mod
-      - uses: actions/cache@v3
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         name: Operator Binary Cache
         with:
           path: |
             ./minio-operator
           key: ${{ runner.os }}-binary-${{ github.run_id }}
-      - uses: actions/cache@v3
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         name: Operator Sidecar Binary Cache
         with:
           path: |
@@ -332,17 +326,17 @@ jobs:
         os: [ ubuntu-latest ]
 
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-go@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
           go-version-file: go.mod
-      - uses: actions/cache@v3
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         name: Operator Binary Cache
         with:
           path: |
             ./minio-operator
           key: ${{ runner.os }}-binary-${{ github.run_id }}
-      - uses: actions/cache@v3
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         name: Operator Sidecar Binary Cache
         with:
           path: |
@@ -360,17 +354,17 @@ jobs:
       matrix:
         os: [ ubuntu-latest ]
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-go@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
           go-version-file: go.mod
-      - uses: actions/cache@v3
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         name: Operator Binary Cache
         with:
           path: |
             ./minio-operator
           key: ${{ runner.os }}-binary-${{ github.run_id }}
-      - uses: actions/cache@v3
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         name: Operator Sidecar Binary Cache
         with:
           path: |
@@ -389,7 +383,7 @@ jobs:
         os: [ ubuntu-latest ]
     steps:
       - name: Free Disk Space (Ubuntu)
-        uses: jlumbroso/free-disk-space@main
+        uses: jlumbroso/free-disk-space@54081f138730dfa15788a46383842cd2f914a1be # v1.3.1
         with:
           tool-cache: false
           android: true
@@ -398,17 +392,17 @@ jobs:
           large-packages: true
           docker-images: true
           swap-storage: true
-      - uses: actions/checkout@v3
-      - uses: actions/setup-go@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
           go-version-file: go.mod
-      - uses: actions/cache@v3
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         name: Operator Binary Cache
         with:
           path: |
             ./minio-operator
           key: ${{ runner.os }}-binary-${{ github.run_id }}
-      - uses: actions/cache@v3
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         name: Operator Sidecar Binary Cache
         with:
           path: |
@@ -430,17 +424,17 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
-      - uses: actions/setup-go@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
           go-version-file: go.mod
-      - uses: actions/cache@v3
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         name: Operator Binary Cache
         with:
           path: |
             ./minio-operator
           key: ${{ runner.os }}-binary-${{ github.run_id }}
-      - uses: actions/cache@v3
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         name: Operator Sidecar Binary Cache
         with:
           path: |
@@ -466,17 +460,17 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
-      - uses: actions/setup-go@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
           go-version-file: go.mod
-      - uses: actions/cache@v3
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         name: Operator Binary Cache
         with:
           path: |
             ./minio-operator
           key: ${{ runner.os }}-binary-${{ github.run_id }}
-      - uses: actions/cache@v3
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         name: Operator Sidecar Binary Cache
         with:
           path: |
