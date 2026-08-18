@@ -25,10 +25,12 @@ DEV_TEST=$OPERATOR_DEV_TEST
 
 # Set OPERATOR_DEV_TEST to skip downloading these dependencies
 if [[ -z "${DEV_TEST}" ]]; then
-  ## Make sure to install things if not present already
-  sudo curl -#L "https://dl.k8s.io/release/v1.30.10/bin/$OS/$ARCH/kubectl" -o /usr/local/bin/kubectl
-
-  sudo chmod +x /usr/local/bin/kubectl
+  ## Make sure to install things if not present already.
+  ## In CI kubectl and helm come from Azure/setup-kubectl and Azure/setup-helm.
+  if ! command -v kubectl >/dev/null 2>&1; then
+    sudo curl -#L "https://dl.k8s.io/release/v1.30.10/bin/$OS/$ARCH/kubectl" -o /usr/local/bin/kubectl
+    sudo chmod +x /usr/local/bin/kubectl
+  fi
 
   sudo curl -#L "https://dl.min.io/client/mc/release/${OS}-${ARCH}/mc" -o /usr/local/bin/mc
   sudo chmod +x /usr/local/bin/mc
